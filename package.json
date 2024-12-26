@@ -2,15 +2,20 @@
   "name": "data-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "Client.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node runTemplatesForWikidata.js"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.7",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1"
   }
 }

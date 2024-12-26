@@ -1,4 +1,5 @@
-import { Claims, Template } from "./getWikidataData.js";
+import { Claims } from "./Claims.js";
+import { Template } from "./Template.js";
 
 class Templates {
   list = [
@@ -241,9 +242,9 @@ class Templates {
   }
 
   /**
-   * 
-   * @param {String} text 
-   * @param {Claims[]} claims 
+   *
+   * @param {String} text
+   * @param {Claims[]} claims
    * @returns {String}
    */
   updateText(text, claims) {

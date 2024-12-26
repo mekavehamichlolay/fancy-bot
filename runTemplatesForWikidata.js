@@ -83,7 +83,12 @@ class Updater {
       baseRevId: this.baseRevId,
       summary: "בוט: עדכון מויקינתונים",
     };
-    await bot.edit(editOptions);
+    try {
+      await bot.edit(editOptions);
+    } catch (error) {
+      this.loger.error(`שגיאה בעריכת [[${this.title}]]: ${error}`);
+      return this.start();
+    }
     this.loger.success(`[[${this.title}]] עודכן`);
     return this.start();
   }
@@ -163,12 +168,12 @@ const generatorParams = {
   format: "json",
   prop: "revisions",
   rawcontinue: 1,
-  pageids: "99359",
+  pageids: "620368",
   generator: "categorymembers",
   formatversion: "2",
   rvprop: "ids|content",
   rvslots: "main",
-  gcmpageid: "99359",
+  gcmpageid: "620368",
   gcmcontinue: "",
   gcmlimit: 100,
 };
@@ -185,9 +190,15 @@ function parser(res) {
 async function recurser(continueParam) {
   if (continueParam && continueParam !== generatorParams.gcmcontinue) {
     generatorParams.gcmcontinue = continueParam;
-    const newList = await bot.generator(generatorParams, parser);
-    pageList.push(...newList.pages);
-    recurser(newList.continue);
+    try {
+      const newList = await bot.generator(generatorParams, parser);
+      pageList.push(...newList.pages);
+      recurser(newList.continue);
+    } catch (error) {
+      console.error(error);
+      console.log("currently stayed in line", pageList.length);
+      return;
+    }
   }
 }
 const loger = new Loger(bot);
@@ -195,19 +206,20 @@ const loger = new Loger(bot);
 const list = await bot.generator(generatorParams, parser);
 pageList.push(...list.pages);
 const workers = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 25; i++) {
   const worker = new Updater(i + 1, loger);
   workers.push(worker.start());
 }
 recurser(list.continue);
-await Promise.all(workers);
-await loger.log();
+await Promise.all(workers).finally(() => {
+  loger.log();
+});
 await bot.logout();
 
 function handleExit() {
   end.terminate = true;
   console.log("waiting for workers to finish");
-  Promise.all(workers).then(() => {
+  Promise.all(workers).finally(() => {
     loger.log().then(() => {
       bot.logout().then(() => process.exit(0));
     });

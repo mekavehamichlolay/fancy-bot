@@ -5,7 +5,7 @@ class Templates {
   list = [
     {
       name: `ויקישיתוף בשורה`,
-      regExp: /\{\{ויקישיתוף\sבשורה\s?\|?\s?\}\}/,
+      regExp: /(\{\{ויקישיתוף\sבשורה\s?\|?\s?\}\}|\{\{ויקישיתוף בשורה\|תצוגה\=[^}|]*\}\})/,
       parameters: [{ claim: "P373", param: "", text: "Category:" }],
     },
     {

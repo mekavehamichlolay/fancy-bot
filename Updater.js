@@ -18,12 +18,13 @@ export class Updater {
    * @param {{terminate:boolean}} terminater
    * @param {Templates} templates
    */
-  constructor(id, loger, pagesArray, terminater, templates) {
+  constructor(id, loger, pagesArray, terminater, templates, bot) {
     this.id = id;
     this.loger = loger;
     this.pagesArray = pagesArray;
     this.terminater = terminater;
     this.templates = templates;
+    this.bot = bot;
   }
 
   /**
@@ -54,7 +55,10 @@ export class Updater {
    * @returns {Promise<String>}
    */
   async worker() {
-    await this.wikidataClass.reset(this.title);
+    await this.wikidataClass.reset(
+      this.title,
+      this.wikitext.match(/\{\{מיון ויקיפדיה[^}]+\}\}/)?.[0]
+    );
     if (this.wikidataClass.isError) {
       return this.start();
     }
@@ -77,7 +81,7 @@ export class Updater {
       summary: "בוט: עדכון מויקינתונים",
     };
     try {
-      await bot.edit(editOptions);
+      await this.bot.edit(editOptions);
     } catch (error) {
       this.loger.error(`שגיאה בעריכת [[${this.title}]]: ${error}`);
       return this.start();

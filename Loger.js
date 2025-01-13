@@ -15,6 +15,7 @@ export class Loger {
     this.successes = [];
   }
   error(error) {
+    console.log(error);
     this.errors.push(error);
   }
   warning(warning) {

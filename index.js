@@ -1,13 +1,10 @@
 import WikiBot from "./WikiBot.js";
-import Templates from "./Templates.js";
 import { Loger } from "./Loger.js";
-import { Updater } from "./Updater.js";
+import { RedirectUpdater } from "./RedirectUpdater.js";
 
 const hamichlol = "https://www.hamichlol.org.il/w/api.php";
 
 const bot = new WikiBot(hamichlol);
-
-const templates = new Templates();
 
 process.on("exit", handleExit);
 process.on("SIGINT", handleExit);
@@ -25,23 +22,25 @@ try {
   console.error(error);
   process.exit(1);
 }
+
 const generatorParams = {
   action: "query",
   format: "json",
   prop: "revisions",
-  rawcontinue: 1,
-  pageids: "620368",
-  generator: "categorymembers",
+  pageids: "162971",
+  generator: "transcludedin",
   formatversion: "2",
   rvprop: "ids|content",
   rvslots: "main",
-  gcmpageid: "620368",
-  gcmcontinue: "",
-  gcmlimit: 100,
+  gtiprop: "pageid|title|redirect",
+  gtinamespace: "0",
+  gtishow: "redirect",
+  gticontinue: "0",
+  gtilimit: 50,
 };
 function parser(res) {
   return {
-    continue: res["query-continue"]?.categorymembers?.gcmcontinue,
+    continue: res?.continue?.gticontinue,
     pages: res.query?.pages?.map((page) => ({
       title: page.title,
       revid: page.revisions[0]?.revid,
@@ -50,8 +49,8 @@ function parser(res) {
   };
 }
 async function recurser(continueParam) {
-  if (continueParam && continueParam !== generatorParams.gcmcontinue) {
-    generatorParams.gcmcontinue = continueParam;
+  if (continueParam && continueParam !== generatorParams.gticontinue) {
+    generatorParams.gticontinue = continueParam;
     try {
       const newList = await bot.generator(generatorParams, parser);
       pageList.push(...newList.pages);
@@ -68,8 +67,9 @@ const loger = new Loger(bot);
 const list = await bot.generator(generatorParams, parser);
 pageList.push(...list.pages);
 const workers = [];
-for (let i = 0; i < 25; i++) {
-  const worker = new Updater(i + 1, loger, pageList, end, templates);
+const nomberOfWorkers = 5;
+for (let i = 0; i < nomberOfWorkers; i++) {
+  const worker = new RedirectUpdater(i + 1, loger, pageList, end, bot);
   workers.push(worker.start());
 }
 recurser(list.continue);

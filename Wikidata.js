@@ -56,7 +56,10 @@ export class Wikidata {
     );
     const json = await response.json();
     if (json.entities) {
-      return Object.keys(json.entities)[0];
+      const entity = Object.keys(json.entities)[0];
+      if (entity !== "-1") {
+        return Object.keys(json.entities)[0];
+      }
     }
     if (nameToCheck(title) === title) {
       throw new Error("Entity not found");
@@ -84,16 +87,39 @@ export class Wikidata {
 
   /**
    *
+   * @param {String} text
+   * @returns {String}
+   */
+  getEntityFromText(text) {
+    return text.match(/\|פריט=(Q[^}|]+)/)?.[1] || "";
+  }
+
+  getTitleFromText(text) {
+    return text.match(/\{\{מיון ויקיפדיה\|דף=([^|}]+)/)?.[1] || "";
+  }
+  /**
+   *
    * @param {String} title
+   * @param {String} [textToParse]
    * @returns {Promise<this>}
    */
-  async reset(title) {
+  async reset(title, textToParse) {
     if (!title) {
       throw new Error("Title is required");
     }
     this.isError = false;
     this.title = `${title}`;
     this.entity = "";
+    if (textToParse) {
+      this.entity = this.getEntityFromText(textToParse);
+      if (this.entity) {
+        await this.setClaims();
+        return this;
+      }
+      if (this.title !== this.getTitleFromText(textToParse)) {
+        this.title = this.getTitleFromText(textToParse);
+      }
+    }
     try {
       this.entity = await this.getEntity(this.title);
     } catch (error) {

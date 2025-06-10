@@ -21,6 +21,9 @@ export function getTemplates(text, name) {
     }
     if (name && template.name !== name) {
       continue;
+    } else if (name && template.name === name) {
+      templates.push(template);
+      return templates;
     }
     templates.push(template);
   }
@@ -31,7 +34,7 @@ export function getTemplates(text, name) {
  * defines a template
  * @typedef {Object} Template
  * @property {String} name
- * @property {{[String]:String}} parameters
+ * @property {Object.<string, string>} parameters
  * @property {String[]} anonParameters
  * @property {String} fullText
  */
@@ -185,9 +188,7 @@ export function extractTemplate(text, position) {
       }
       continue;
     }
-    if (text[position] === "}") {
-      throw new Error(errorMessages.unclosedTemplate);
-    }
+    throw new Error(errorMessages.unclosedTemplate);
   }
   template.fullText += "}}";
   return [template, position + 2];

@@ -815,6 +815,33 @@ describe("extractTemplate", () => {
         });
         expect(position).to.equal(text.length);
       });
+      it("should parse template 6", () => {
+        const text = `{{אישיות
+| שם = פרדי אוברסטייחן
+| שם בשפת המקור = Freddie Nanda Dekker-Oversteegen
+| תאריך לידה = 6 בספטמבר 1925
+| תאריך פטירה = 5 בספטמבר 2018
+| ידועה בשל = חברה במחתרת ההולנדית במהלך מלחמת העולם השנייה
+| בן זוג = יאן דקר
+| צאצאים = 3
+}}`;
+        const [template, position] = extractTemplate(text, 0);
+        expect(template).to.deep.equal({
+          name: "אישיות",
+          parameters: {
+            שם: "פרדי אוברסטייחן",
+            "שם בשפת המקור": "Freddie Nanda Dekker-Oversteegen",
+            "תאריך לידה": "6 בספטמבר 1925",
+            "תאריך פטירה": "5 בספטמבר 2018",
+            "ידועה בשל": "חברה במחתרת ההולנדית במהלך מלחמת העולם השנייה",
+            "בן זוג": "יאן דקר",
+            צאצאים: "3",
+          },
+          anonParameters: [],
+          fullText: text,
+        });
+        expect(position).to.equal(text.length);
+      });
     });
   });
 });

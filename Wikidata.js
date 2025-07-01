@@ -1,11 +1,15 @@
 import { Claims } from "./Claims.js";
+import { Country } from "./Country.js";
 import { nameToCheck } from "./mich-utils.js";
 
 export class Wikidata {
   wikidataURL = "https://www.wikidata.org/w/api.php?";
   title = "";
   entity = "";
-  claims = new Claims({});
+  /**
+   * @type {Claims}
+   */
+  claims = null;
   errorHandler = (e) => undefined;
   isError = false;
   wikidataGetEntityParam = {
@@ -29,13 +33,15 @@ export class Wikidata {
   /**
    *
    * @param {String} title
+   * @param {Country} [countryClass]
    * @param {(string)=>void} [errorHandler]
    */
-  constructor(title, errorHandler) {
+  constructor(title, countryClass, errorHandler) {
     if (!title) {
       throw new Error("Title is required");
     }
     this.title = `${title}`;
+    this.claims = new Claims({}, countryClass);
     if (errorHandler) {
       this.errorHandler = errorHandler;
     }
@@ -78,7 +84,7 @@ export class Wikidata {
         this.errorHandler("Claims not found");
         return;
       }
-      this.claims.reset(json.claims);
+      await this.claims.reset(json.claims);
     } catch (error) {
       this.isError = true;
       this.errorHandler(error.message);
@@ -104,8 +110,8 @@ export class Wikidata {
    * @returns {Promise<this>}
    */
   async reset(title, textToParse) {
-    if (!title) {
-      throw new Error("Title is required");
+    if (!title || typeof title !== "string") {
+      throw new Error("Title is required", title);
     }
     this.isError = false;
     this.title = `${title}`;
@@ -116,7 +122,7 @@ export class Wikidata {
         await this.setClaims();
         return this;
       }
-      if (this.title !== this.getTitleFromText(textToParse)) {
+      if (this.getTitleFromText(textToParse) && this.title !== this.getTitleFromText(textToParse)) {
         this.title = this.getTitleFromText(textToParse);
       }
     }
@@ -124,6 +130,7 @@ export class Wikidata {
       this.entity = await this.getEntity(this.title);
     } catch (error) {
       this.isError = true;
+      console.log(title,error)
       this.errorHandler(
         `שגיאה בעת חיפוש ערך ויקינתונים עבור [[${this.title}]]`
       );

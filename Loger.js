@@ -1,4 +1,5 @@
 import WikiBot from "./WikiBot.js";
+import fs from "fs";
 
 export class Loger {
   errors = [];
@@ -16,6 +17,9 @@ export class Loger {
   }
   error(error) {
     console.log(error);
+    if(!this.errors){
+      this.errors = [];
+    }
     this.errors.push(error);
   }
   warning(warning) {
@@ -60,6 +64,16 @@ export class Loger {
       summary: "בוט: דיווח על פעילות",
       nocreate: 0,
     });
+   
+    fs.writeFileSync(
+      `./logs/${new Date().toISOString().replace(/\:/g, '-')}.json`,
+      JSON.stringify({
+        errors: this.errors,
+        warnings: this.warnings,
+        successes: this.successes,
+      })
+    );
     console.log(logout);
+    return logout;
   }
 }

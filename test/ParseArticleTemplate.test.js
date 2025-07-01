@@ -335,8 +335,7 @@ describe("getTemplates", () => {
     });
   });
   describe("handle nested templates when thay are asked", () => {
-    it("should parse one nested templates correctly", () => {
-      const article = `{{מבנה
+    const article = `{{מבנה
 |סוג=[[מוזיאון ילדים]]
 |כתובת=דוד הראובני 25, באר-שבע
 |מייסדים=ג'ק, ג'וזף ומורטון מנדל
@@ -418,6 +417,7 @@ describe("getTemplates", () => {
 {{וח}}
 {{מיון ויקיפדיה|דף=לונדע|גרסה=28965358}}
 `;
+    it("should parse one nested templates correctly", () => {
       const result = getTemplates(article, { name: "מממו", nested: true });
       expect(result).to.deep.equal([
         {
@@ -425,6 +425,109 @@ describe("getTemplates", () => {
           parameters: {},
           anonParameters: ["באר שבע"],
           fullText: "{{מממו|באר שבע}}",
+          nested: [],
+        },
+      ]);
+    });
+    it("should return multiple of the same template when asked", () => {
+      const result = getTemplates(article, {
+        name: "ynet",
+        multi: true,
+        nested: true,
+      });
+      expect(result).to.deep.equal([
+        {
+          name: "ynet",
+          parameters: {},
+          anonParameters: [
+            "עינת שגיא אלפסה",
+            "בילוי לכל המשפחה: לונדע - מוזיאון הילדים של באר שבע",
+            "4619187",
+            "28 בינואר 2015",
+          ],
+          fullText:
+            "{{ynet|עינת שגיא אלפסה|בילוי לכל המשפחה: לונדע - מוזיאון הילדים של באר שבע|4619187|28 בינואר 2015}}",
+          nested: [],
+        },
+        {
+          name: "ynet",
+          parameters: {},
+          anonParameters: [
+            "אילנה קוריאל",
+            "לונדע: מוזיאון הילדים החדש של הנגב",
+            "4640521",
+            "24 במרץ 2015",
+          ],
+          fullText:
+            "{{ynet|אילנה קוריאל|לונדע: מוזיאון הילדים החדש של הנגב|4640521|24 במרץ 2015}}",
+          nested: [],
+        },
+      ]);
+    });
+  });
+  describe("handle multiple named templates correctly", () => {
+    it("should return multiple templates with the same name", () => {
+      const wikitext = `
+    {{Template1|param1=value1}}
+    Some text in between.
+    {{Template1|param1=value2|param2=value3}}
+  `;
+      const result = getTemplates(wikitext, {
+        name: "Template1",
+        multi: true,
+        nested: true,
+      });
+
+      expect(result).to.deep.equal([
+        {
+          name: "Template1",
+          parameters: {
+            param1: "value1",
+          },
+          anonParameters: [],
+          nested: [],
+          fullText: "{{Template1|param1=value1}}",
+        },
+        {
+          name: "Template1",
+          parameters: {
+            param1: "value2",
+            param2: "value3",
+          },
+          nested: [],
+          anonParameters: [],
+          fullText: "{{Template1|param1=value2|param2=value3}}",
+        },
+      ]);
+    });
+    it("should return multiple templates with the same name also when nested", () => {
+      const wikitext = `
+    {{Template1|param1=value1|nested={{Template2|param2=value2}}}}
+    Some text in between.
+    {{Template1|param1=value2|param2=value3|nested={{Template2|param3=value3}}}}
+    `;
+      const result = getTemplates(wikitext, {
+        name: "Template2",
+        multi: true,
+        nested: true,
+      });
+      expect(result).to.deep.equal([
+        {
+          name: "Template2",
+          parameters: {
+            param2: "value2",
+          },
+          anonParameters: [],
+          fullText: "{{Template2|param2=value2}}",
+          nested: [],
+        },
+        {
+          name: "Template2",
+          parameters: {
+            param3: "value3",
+          },
+          anonParameters: [],
+          fullText: "{{Template2|param3=value3}}",
           nested: [],
         },
       ]);

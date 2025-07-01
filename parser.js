@@ -182,7 +182,7 @@ export function extractTemplate(text, position) {
       while (
         (text[position] !== "=" &&
           text[position] !== "|" &&
-          text[position] !== "}") ||
+          (text[position] !== "}" || text[position + 1] !== "}")) ||
         nestingLevel > 0
       ) {
         if (position >= text.length) {
@@ -215,7 +215,8 @@ export function extractTemplate(text, position) {
         template.fullText += "=";
         let data = "";
         while (
-          (text[position] !== "|" && text[position] !== "}") ||
+          (text[position] !== "|" &&
+            (text[position] !== "}" || text[position + 1] !== "}")) ||
           nestingLevel > 0
         ) {
           if (position >= text.length) {
@@ -261,7 +262,10 @@ export function extractTemplate(text, position) {
         } else {
           template.parameters[param.trim()] = data.trim();
         }
-      } else if (text[position] === "|" || text[position] === "}") {
+      } else if (
+        text[position] === "|" ||
+        (text[position] === "}" && text[position + 1] === "}")
+      ) {
         template.anonParameters.push(param.trim());
       }
       continue;
@@ -329,7 +333,7 @@ export function extractNestedtemplates(text, position) {
       while (
         (text[position] !== "=" &&
           text[position] !== "|" &&
-          text[position] !== "}") ||
+          (text[position] !== "}" || text[position + 1] !== "}")) ||
         nestingLevel > 0
       ) {
         if (position >= text.length) {
@@ -349,19 +353,18 @@ export function extractNestedtemplates(text, position) {
             template.fullText += nestedTemplate.fullText;
             param += nestedTemplate.fullText;
             nestingLevel--;
+            if (newPosition <= position) {
+              throw new Error(
+                "position did not grow as expected, entering infinate loop"
+              );
+            }
             position = newPosition;
             continue;
           }
           template.fullText += text[position] + text[position + 1];
           param += text[position] + text[position + 1];
           position += 2;
-        } else if (
-          (text[position] === "}" && text[position + 1] === "}") ||
-          (text[position] === "]" && text[position + 1] === "]")
-        ) {
-          if (text[position] === "}" && text[position + 1] === "}") {
-            throw new Error("something went wrong with the nested template");
-          }
+        } else if (text[position] === "]" && text[position + 1] === "]") {
           nestingLevel--;
           template.fullText += text[position] + text[position + 1];
           param += text[position] + text[position + 1];
@@ -377,7 +380,8 @@ export function extractNestedtemplates(text, position) {
         template.fullText += "=";
         let data = "";
         while (
-          (text[position] !== "|" && text[position] !== "}") ||
+          (text[position] !== "|" &&
+            (text[position] !== "}" || text[position + 1] !== "}")) ||
           nestingLevel > 0
         ) {
           if (position >= text.length) {
@@ -397,19 +401,18 @@ export function extractNestedtemplates(text, position) {
               template.fullText += nestedTemplate.fullText;
               data += nestedTemplate.fullText;
               nestingLevel--;
+              if (newPosition <= position) {
+                throw new Error(
+                  "position did not grow as expected, entering infinate loop"
+                );
+              }
               position = newPosition;
               continue;
             }
             data += text[position] + text[position + 1];
             template.fullText += text[position] + text[position + 1];
             position += 2;
-          } else if (
-            (text[position] === "}" && text[position + 1] === "}") ||
-            (text[position] === "]" && text[position + 1] === "]")
-          ) {
-            if (text[position] === "}" && text[position + 1] === "}") {
-              throw new Error("something went wrong with the nested template");
-            }
+          } else if (text[position] === "]" && text[position + 1] === "]") {
             nestingLevel--;
             data += text[position] + text[position + 1];
             template.fullText += text[position] + text[position + 1];
@@ -438,7 +441,10 @@ export function extractNestedtemplates(text, position) {
         } else {
           template.parameters[param.trim()] = data.trim();
         }
-      } else if (text[position] === "|" || text[position] === "}") {
+      } else if (
+        text[position] === "|" ||
+        (text[position] === "}" && text[position + 1] === "}")
+      ) {
         template.anonParameters.push(param.trim());
       }
       continue;

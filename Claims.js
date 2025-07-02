@@ -55,9 +55,9 @@ export class Claims {
         };
         continue;
       }
-      if (key === "P17") {
-        if(!claims[key][0].mainsnak.datavalue?.value.id){
-          continue
+      if (key === "P17" && this.countryClass) {
+        if (!claims[key][0].mainsnak.datavalue?.value.id) {
+          continue;
         }
         this.claims[key] = await this.countryClass.getName(
           claims[key][0].mainsnak.datavalue?.value.id
@@ -87,10 +87,6 @@ export class Claims {
       return param === "רוחב"
         ? this.claims[property].latitude
         : this.claims[property].longitude;
-    }
-    if (property === "P17" && !this.claims[property]) {
-      console.log(`Country not found for property`);
-      return "";
     }
     return this.claims[property].replace(/\=/g, "{{=}}");
   }

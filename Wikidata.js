@@ -122,7 +122,10 @@ export class Wikidata {
         await this.setClaims();
         return this;
       }
-      if (this.getTitleFromText(textToParse) && this.title !== this.getTitleFromText(textToParse)) {
+      if (
+        this.getTitleFromText(textToParse) &&
+        this.title !== this.getTitleFromText(textToParse)
+      ) {
         this.title = this.getTitleFromText(textToParse);
       }
     }
@@ -130,7 +133,6 @@ export class Wikidata {
       this.entity = await this.getEntity(this.title);
     } catch (error) {
       this.isError = true;
-      console.log(title,error)
       this.errorHandler(
         `שגיאה בעת חיפוש ערך ויקינתונים עבור [[${this.title}]]`
       );

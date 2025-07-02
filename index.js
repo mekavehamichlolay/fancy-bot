@@ -1,6 +1,6 @@
 import WikiBot from "./WikiBot.js";
 import { Loger } from "./Loger.js";
-import { Aklim } from "./Aklim.js";
+import { Mmi } from "./Mmi.js";
 
 const hamichlol = "https://www.hamichlol.org.il/w/api.php";
 
@@ -11,7 +11,6 @@ process.on("SIGINT", handleExit);
 process.on("SIGTERM", handleExit);
 process.on("unhandledRejection", handleExit);
 
-// Start the timeout immediately
 const pageList = [];
 const end = {
   terminate: false,
@@ -23,26 +22,27 @@ try {
   console.error(error);
   process.exit(1);
 }
-const category = 603616;
+const template = 17498;
 
 const generatorParams = {
   action: "query",
   format: "json",
   prop: "revisions",
   rawcontinue: 1,
-  pageids: category,
-  generator: "categorymembers",
+  pageids: template,
+  generator: "transcludedin",
   formatversion: "2",
   rvprop: "ids|content",
   rvslots: "main",
-  gcmpageid: category,
-  gcmcontinue: "",
-  gcmlimit: 100,
+  gtiprop: "pageid",
+  gticontinue: "0",
+  gtilimit: 100,
+  gtinamespace: "0",
 };
 
 function parser(res) {
   return {
-    continue: res["query-continue"]?.categorymembers?.gcmcontinue,
+    continue: res["query-continue"]?.transcludedin?.gticontinue,
     pages:
       res.query?.pages?.map((page) => ({
         title: page.title,
@@ -52,9 +52,10 @@ function parser(res) {
   };
 }
 async function recurser(continueParam) {
-  if (continueParam && continueParam !== generatorParams.gcmcontinue) {
+  // console.log(currentPosition, generatorParams.pageids);
+  if (continueParam && continueParam !== generatorParams.gticontinue) {
     console.log("continuing with", continueParam);
-    generatorParams.gcmcontinue = continueParam;
+    generatorParams.gticontinue = continueParam;
     try {
       const newList = await bot.generator(generatorParams, parser);
       pageList.push(...newList.pages);
@@ -73,7 +74,7 @@ pageList.push(...list.pages);
 const workers = [];
 const nomberOfWorkers = 5;
 for (let i = 0; i < nomberOfWorkers; i++) {
-  const worker = new Aklim(i + 1, loger, pageList, end, bot);
+  const worker = new Mmi(i + 1, loger, pageList, end, bot);
   workers.push(worker.start());
 }
 // await recurser(list.continue);

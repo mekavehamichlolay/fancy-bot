@@ -1,7 +1,8 @@
+import fs from "fs";
 import WikiBot from "./WikiBot.js";
 import { Loger } from "./Loger.js";
-import { Mmi } from "./Mmi.js";
-
+import { LastUpdate } from "./LastUpdate.js";
+import { title } from "process";
 const hamichlol = "https://www.hamichlol.org.il/w/api.php";
 
 const bot = new WikiBot(hamichlol);
@@ -22,64 +23,106 @@ try {
   console.error(error);
   process.exit(1);
 }
-const template = 17498;
-
-const generatorParams = {
-  action: "query",
-  format: "json",
-  prop: "revisions",
-  rawcontinue: 1,
-  pageids: template,
-  generator: "transcludedin",
-  formatversion: "2",
-  rvprop: "ids|content",
-  rvslots: "main",
-  gtiprop: "pageid",
-  gticontinue: "0",
-  gtilimit: 100,
-  gtinamespace: "0",
-};
-
-function parser(res) {
+const pages = JSON.parse(fs.readFileSync("./rev_time.json", "utf8"));
+if (!pages || !Array.isArray(pages)) {
+  console.error("Invalid pages data in rev_time.json");
+  process.exit(1);
+}
+/**
+ *
+ * @param {Object<string,string>} pages
+ * @returns {Object<string,string>}
+ */
+function paramCreator(pages) {
   return {
-    continue: res["query-continue"]?.transcludedin?.gticontinue,
-    pages:
+    action: "query",
+    format: "json",
+    prop: "revisions",
+    titles: Object.keys(pages).join("|"),
+    formatversion: "2",
+    rvprop: "ids|content",
+    rvslots: "main",
+  };
+}
+
+/**
+ *
+ * @param {Object<string,string>} pages
+ * @returns {(res: {query:{pages:Array<{title:String;revid:Number;revisions:Array<{revid:Number;slots:{main:{content:String}}}>}>}})=>Array<{title:String;revid:Number;wikitext:String,timestamp:String}>}
+ */
+function parser(pages) {
+  return (res) => {
+    return (
       res.query?.pages?.map((page) => ({
         title: page.title,
         revid: page.revisions[0]?.revid,
         wikitext: page.revisions[0]?.slots?.main?.content,
-      })) || [],
+        timestamp: pages[page.title.replace(/ /g, "_")],
+      })) || []
+    );
   };
 }
-async function recurser(continueParam) {
-  // console.log(currentPosition, generatorParams.pageids);
-  if (continueParam && continueParam !== generatorParams.gticontinue) {
-    console.log("continuing with", continueParam);
-    generatorParams.gticontinue = continueParam;
-    try {
-      const newList = await bot.generator(generatorParams, parser);
-      pageList.push(...newList.pages);
-      return recurser(newList.continue);
-    } catch (error) {
-      console.error(error);
-      console.log("currently stayed in line", pageList.length);
-      return;
+async function recurser() {
+  if (pages.length > 0 && !end.terminate) {
+    const last50 = {};
+    pages.splice(pages.length - 50, 50).forEach((page) => {
+      last50[page.pagetitle] = converTimeStampToDate(page.timestamp);
+    });
+    const last50Params = paramCreator(last50);
+    const list = await bot.generator(last50Params, parser(last50));
+    pageList.push(...list);
+    if (pages.length > 0) {
+      return recurser();
     }
+    console.log("finished proccesing all pages");
   }
 }
+/**
+ *
+ * @param {number} timestamp
+ * @returns {string}
+ */
+function converTimeStampToDate(timestamp) {
+  // 20250703211432 that is the furmat as YYYYMMDDHHMMSS
+  const year = parseInt(timestamp.toString().slice(0, 4), 10);
+  const month = parseInt(timestamp.toString().slice(4, 6), 10) - 1; // Months are 0-indexed in JavaScript
+  const monthNames = [
+    "ינואר",
+    "פברואר",
+    "מרץ",
+    "אפריל",
+    "מאי",
+    "יוני",
+    "יולי",
+    "אוגוסט",
+    "ספטמבר",
+    "אוקטובר",
+    "נובמבר",
+    "דצמבר",
+  ];
+  return `${monthNames[month]} ${year}`;
+}
 const loger = new Loger(bot);
-
-const list = await bot.generator(generatorParams, parser);
-pageList.push(...list.pages);
+const last50 = {};
+pages.splice(pages.length - 5, 5).forEach((page) => {
+  last50[page.pagetitle] = converTimeStampToDate(page.timestamp);
+});
+// console.log(paramCreator(last50));
+const list = await bot.generator(paramCreator(last50), parser(last50));
+console.log(`found ${list.length} pages to process`);
+pageList.push(...list);
 const workers = [];
 const nomberOfWorkers = 5;
 for (let i = 0; i < nomberOfWorkers; i++) {
-  const worker = new Mmi(i + 1, loger, pageList, end, bot);
+  const worker = new LastUpdate(i + 1, loger, pageList, end, bot, [
+    "timestamp",
+  ]);
   workers.push(worker.start());
 }
 // await recurser(list.continue);
-recurser(list.continue);
+// recurser();
 await Promise.all(workers).finally(async () => {
+  console.log(pageList.length);
   await loger.log();
 });
 await bot.logout();

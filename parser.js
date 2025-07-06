@@ -15,7 +15,51 @@ export function getTemplates(text, options) {
   const { name, nested = false, multi = false } = options || {};
   const templates = [];
   let i = 0;
+  let comment = false;
+  let math = false;
   while (i < text.length) {
+    if (text[i] === "<" && text[i + 1] === "!" && text[i + 2] === "-") {
+      comment = true;
+      i += 3;
+      continue;
+    } else if (
+      comment &&
+      text[i] === "-" &&
+      text[i + 1] === "-" &&
+      text[i + 2] === ">"
+    ) {
+      comment = false;
+      i += 3;
+      continue;
+    } else if (
+      text[i] === "<" &&
+      text[i + 1] === "m" &&
+      text[i + 2] === "a" &&
+      text[i + 3] === "t" &&
+      text[i + 4] === "h" &&
+      text[i + 5] === ">"
+    ) {
+      math = true;
+      i += 6;
+      continue;
+    } else if (
+      math &&
+      text[i] === "<" &&
+      text[i + 1] === "/" &&
+      text[i + 2] === "m" &&
+      text[i + 3] === "a" &&
+      text[i + 4] === "t" &&
+      text[i + 5] === "h" &&
+      text[i + 6] === ">"
+    ) {
+      math = false;
+      i += 7;
+      continue;
+    }
+    if (comment || math) {
+      i++;
+      continue;
+    }
     if (text[i] !== "{" || text[i + 1] !== "{") {
       i++;
       continue;

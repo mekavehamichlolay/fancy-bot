@@ -16,6 +16,7 @@ class Client {
   #password = process.env.PWD || "";
   isLogedIn = false;
   csrfToken = "";
+  botAuth = process.env.BOT_AUTH || "";
   /**
    *
    * @param {String} wikiUrl
@@ -32,6 +33,7 @@ class Client {
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         "user-agent": "node-fetch mw-api-node-client",
         cookie: this.#cookie,
+        "Bot-Auth": this.botAuth || "",
       },
       method: "POST",
       credentials: "include",
@@ -101,6 +103,7 @@ class Client {
       {
         headers: {
           cookie: this.#cookie || "",
+          "Bot-Auth": this.botAuth || "",
         },
       }
     );

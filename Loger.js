@@ -17,16 +17,25 @@ export class Loger {
   }
   error(error) {
     console.log(error);
-    if(!this.errors){
+    if (!this.errors) {
       this.errors = [];
     }
     this.errors.push(error);
+    if (this.errors.length > 10000) {
+      this.log();
+    }
   }
   warning(warning) {
     this.warnings.push(warning);
+    if (this.warnings.length > 10000) {
+      this.log();
+    }
   }
   success(success) {
     this.successes.push(success);
+    if (this.successes.length > 10000) {
+      this.log();
+    }
   }
   async log() {
     if (this.loged) {
@@ -40,19 +49,20 @@ export class Loger {
       eLog = true;
     }
     const errorOut = `== שגיאות ==\n*${this.errors.join("\n*")}`;
-
+    const errors = this.errors.splice(0, this.errors.length);
     if (this.warnings.length) {
       wLog = true;
     }
     const warningOut = `== אזהרות ==\n*${this.warnings.join("\n*")}`;
-
+    const warnings = this.warnings.splice(0, this.warnings.length);
     if (this.successes.length) {
       sLog = true;
     }
     const successOut = `== עריכות שבוצעו בהצלחה ==\n*${this.successes.join(
       "\n*"
     )}`;
-
+    const successes = this.successes.splice(0, this.successes.length);
+    this.loged = false;
     if (!eLog && !wLog && !sLog) {
       return;
     }
@@ -64,13 +74,13 @@ export class Loger {
       summary: "בוט: דיווח על פעילות",
       nocreate: 0,
     });
-   
+
     fs.writeFileSync(
-      `./logs/${new Date().toISOString().replace(/\:/g, '-')}.json`,
+      `./logs/${new Date().toISOString().replace(/\:/g, "-")}.json`,
       JSON.stringify({
-        errors: this.errors,
-        warnings: this.warnings,
-        successes: this.successes,
+        errors,
+        warnings,
+        successes,
       })
     );
     console.log(logout);

@@ -612,5 +612,135 @@ describe("getTemplates", () => {
         },
       ]);
     });
+    it("should ignore text within <!-- --> comments", () => {
+      const wikitext = `
+        {{מדען
+| תאריך לידה = 1962
+| מקום לידה = פרהאם, המפשייר
+}}
+
+'''סוזאן אליזבת בלאק''' (ידועה גם בשם סו בלאק, ילידת 1962) היא [[תכנות|מתכנתת]], חוקרת ו[[יזמת חברתית]] בריטית.<ref>{{cite web|url=http://www.sueblack.co.uk|title= Dr Sue Black official webpage|publisher=sueblack.co.uk}}</ref><!--<ref name=dblp>{{DBLP|name=Sue Black}}</ref> !--><!--<ref name=googlescholar>{{Google scholar id}}</ref> !--> בלאק יצרה את קמפיין "[[להציל את פארק בלצ'לי]]" להצלת האתר ששימש מרכז העצבים של פיצוח ההצפנות בבריטניה ב[[מלחמת העולם השנייה]].<ref name="saving">{{cite web|url=http://www.savingbletchleypark.org |archive-url=https://web.archive.org/web/20081109070803/http://savingbletchleypark.org/ |url-status=dead |archive-date=2008-11-09 |publisher=savingbletchleypark.org |title=Saving Bletchley Park }}</ref><ref>{{YouTube|id=fKQYECYJEH0|title=Interview with Sue Black by Robert Llewellyn about Bletchley Park}}</ref> מאז 2018 היא פרופסור למדעי המחשב ומקדמת טכנולוגיה ב[[אוניברסיטת דרהאם]], בעבר עבדה ב[[אוניברסיטת ווסטמינסטר]] וב[[יוניברסיטי קולג' לונדון]].
+
+== ילדות ולימודים ==
+בלאק עזבה את בית הספר ואת הבית בגיל 16, המינימלי המותר בחוק. היא נישאה בגיל 20 וילדה שלושה ילדים.<ref>{{cite web|last1=Black|first1=Sue|title=Bio + Contact|url=https://blackse.wordpress.com/contact/|website=blackse|accessdate=21 May 2016}}</ref> בגיל 25, לאחר שבעלה גירש אותה ואת ילדיה מהבית באיומים על חייהם, הפכה לאם חד הורית וחיה ב[[מקלט לנשים מוכות]].
+
+בחיפוש אחר הזדמנויות פרנסה, היא השתתפה בקורס ערב במתמטיקה, בעקבותיו נרשמה לאוניברסיטה.<ref name="The Guardian">{{cite web|last1=Fleming|first1=Amy|title=#techmums: why can't geeks be mothers too?| url=https://www.theguardian.com/lifeandstyle/2013/nov/11/techmums-geeks-mothers-technology | accessdate=21 May 2016 | publisher=[[The Guardian]] | date=11 November 2013 |website=theguardian.com}}</ref> היא קיבלה תואר במדעי המחשב ב־1993 מ[[אוניברסיטת לונדון סאות' באנק]],<ref>{{cite web| url=http://www.lsbu.ac.uk/about-us/news/sue-black-becomes-obe | title=LSBU alumna Sue Black becomes an OBE in New Year Honours List 2016 | date=5 January 2016 | publisher=[[London South Bank University]] | location=UK | accessdate=7 January 2016 }}</ref> וב-2001 השלימה דוקטורט<ref name=phd>{{cite thesis |degree=PhD |first=Susan Elizabeth|last=Black |title=Computation of Ripple Effect Measures for Software  |publisher=London Southbank University  |year=2001 |url=
+https://copac.jisc.ac.uk/id/48571357?style=html|website=jisc.ac.uk|oclc=1063678609 }}</ref> על חקר [[אפקט הפרפר]] בטכנולוגיות מידע.<!--<ref name=mathgene>{{MathGenealogy}}</ref> !--><ref name="Black2001">{{cite journal|last1=Black|first1=Sue|title=Computing ripple effect for software maintena.nce|journal=Journal of Software Maintenance and Evolution: Research and Practice|volume=13|issue=4|year=2001|pages=263–279|issn=1532-060X|doi=10.1002/smr.233}}</ref>.
+
+== קריירה ומחקר ==
+בלאק שימשה חוקרת בכירה ב[[יוניברסיטי קולג' לונדון]].<ref>{{cite web|url=http://www.cs.ucl.ac.uk/people/S.Black.html |title=Sue Black profile |publisher=[[University College London]] |location=UK |access-date=7 January 2016 |url-status=dead |archive-url=https://web.archive.org/web/20160303202754/http://www0.cs.ucl.ac.uk/people/S.Black.html |archive-date= 3 March 2016 |df= }}</ref>
+לפני כן הייתה ראש החוג למדעי המחשב באוניברסיטת ווסטמינסטר. מאז 2018 היא משמשת פרופסור למדעי המחשב ומקדמת טכנולוגיה באוניברסיטת דרהאם, ופרופסור של כבוד ב[[יוניברסיטי קולג' לונדון]]. בלאק הקימה את קבוצת BCSWomen, קבוצת התמחות של אגודת המחשבים הבריטית,<ref>[http://www.bcs.org/server.php?show=ConWebDoc.8353 Dr Sue Black|Committee|BCSWomen], [[British Computer Society]].</ref> ועמדה בראשה מ-2001 עד 2008. היא פעילה למען נוכחות נשית בתחום [[מדעי המחשב]].<ref>[http://skirtsandladders.com/?tag=sue-black Sue Black profile],[http://skirtsandladders.com/ Skirts and Ladders].</ref>
+
+=== אקטיביזם ===
+==== להציל את פארק בלצ'לי ====
+[[קובץ:Bletchley Park Mansion.jpg|ממוזער|אחוזת פארק בלצ'לי]]
+למשך מספר שנים עמדה בלאק בראש קמפיין למימון השחזור של פארק בלצ'לי, המרכז הבריטי שבו החוקרים במלחמת העולם השנייה פיענחו את ידיעות האויב.<ref name="bbc">Cellan-Jones, Rory, ''[http://www.bbc.co.uk/blogs/technology/2009/03/bletchley_parks_social_media_w.html Bletchley Park's social media war]'', [[BBC News]], 18 March 2009.</ref> בשנת 2003 יצרה [[בלוג]] המספר על המקום לאחר שנחשפה למצבו הרעוע בעת ביקור, לאחר שראתה את שיחזור מכונת ה[[בומב]] ולאחר שדיברה עם מעל לעשרת אלפים איש שעבדו במקום בזמן המלחמה.<ref>Brain, Jon, ''[http://news.bbc.co.uk/2/hi/uk_news/7523743.stm Neglect of Bletchley condemned]'', [[BBC News]], 24 July 2008.</ref> באמצעות תמונה של אחד הבניינים במקום עם כיסוי [[ברזנט]] שנועד להגן על המבנה המתפורר, הצליחו לפתח שיח בנושא ולאחד מדעני מחשב בקריאה לשימור. תוך זמן קצר התווספה לבלוג פעילות משמעותית מצד בלאק וחברי הצוות של היוזמה<!-- <ref>{{article|langue=en|nom=Thomson|prénom=Rebecca|url=http://www.computerweekly.com/Articles/2009/03/19/235325/bletchley-park-wins-crucial-funding-using-facebook-and.htm|titre=Bletchley Park wins crucial funding using Facebook and Twitter|journal=[[Computer Weekly]]|date=19 mars 2009}}</ref>{{,}}.<ref>{{article|langue=en|auteur=[http://www.archimuse.com/mw2010/bios/au_370013252.html Sue Black], [http://www.archimuse.com/mw2010/bios/au_3817.html Jonathan P. Bowen], and [http://www.archimuse.com/mw2010/bios/au_445017569.html Kelsey Griffin]|url=http://www.archimuse.com/mw2010/papers/black/black.html|titre=Can Twitter Save Bletchley Park?|editor=David Bearman and Jennifer Trant|périodique=Museums and the Web 2010|lieu=[[Denver]], United States|date=13–17 April 2010|éditeur=[[Archives & Museum Informatics]]}}</ref> !--> ברשתות החברתיות, ובפרט ב[[טוויטר]]. <!-- <ref>{{lien web|langue=en|nom1=Cellan-Jones|prénom1=Rory|titre=OBE for Bletchley campaigner Sue Black|url=https://www.bbc.co.uk/news/technology-35202667|website=BBC News Technology|éditeur=BBC|consulté le=21 mai 2016|date=30 Dec 2015}}</ref><ref>{{lien web|langue=en|nom=Cellan-Jones|prénom=Rory|url=http://www.bbc.co.uk/blogs/technology/2009/03/bletchley_parks_social_media_w.html|website=dot.life A blog about technology from [[BBC News]]|éditeur=[[BBC]]|consulté le=21 mai 2016|date=18 mars 2009|titre=Bletchley Park's social media war}}</ref> !-->
+
+בסוף 2015 פרסמה בלאק ספר על הקמפיין, בשם "Saving Bletchley Park". הספר פורסם דרך הוצאת Unbound המתמחה בפרסום על בסיס מימון המונים<!-- <ref>{{lien web|langue=en|titre=Saving Bletchley Park|url=https://unbound.co.uk/books/saving-bletchley-park|website=Unbound|consulté le=2015-12-30}}</ref> !-->, והיה הספר המהיר ביותר אי פעם בצבירת הכסף הנדרש לפרסומו במסגרת [[מימון המונים]].<!-- .<ref>{{lien web|url=http://www.womanthology.co.uk/celebrating-the-incredible-codebreakers-of-bletchley-park-dr-sue-black-computer-scientist-writer-and-speaker/|titre=Celebrating the incredible codebreakers of Bletchley Park - Dr. Sue Black OBE, Computer Scientist, Writer and Speaker - Womanthology|website=Womanthology|langue=en-US|consulté le=2016-04-07}}</ref> !-->
+
+על פי ארגון Everywomen לקידום נשים בעסקים, בלאק "מפגינה תכונות של מנהיגה מודרנית", במיוחד בהקשר של שימוש ברשתות חברתיות.<ref>{{cite web|title=#techmums Founder Dr Sue Black's rules for elevating your personal social media presence |url=https://www.everywoman.com/personal-development/personal-branding/techmums-founder-dr-sue-blacks-rules-elevating-your-personal |website=Everywoman |access-date=21 May 2016 |url-status=dead |archive-url=https://web.archive.org/web/20160611102646/https://www.everywoman.com/personal-development/personal-branding/techmums-founder-dr-sue-blacks-rules-elevating-your-personal |archive-date=11 June 2016 |df= }}</ref> גם ב־BBC זיהו כי היא עושה שימוש מתוחכם בטוויטר ובפלטפורמות אחרות בקמפיינים שלה.<ref>{{cite web| last=Cellan-Jones | first=Rory | url=https://www.bbc.co.uk/blogs/technology/2009/03/bletchley_parks_social_media_w.html | website=dot.life A blog about technology from [[BBC News]] | publisher=[[BBC]] | accessdate=21 May 2016 | date=18 March 2009  | title=Bletchley Park's social media war}}</ref><ref>{{cite web|last1=Cellan-Jones|first1=Rory|title=OBE for Bletchley campaigner Sue Black|url=https://www.bbc.co.uk/news/technology-35202667|website=BBC News Technology|publisher=BBC|accessdate=21 May 2016|date=30 December 2015}}</ref>
+
+בלאק הקימה את ארגון Techmums לאמהות שמעוניינות להבין את הפעילות של ילדיהן באינטרנט. Techmums מציע ללא תשלום קורסים באבטחת מידע, בשימוש ברשתות חברתיות, ב[[פייתון]] ובתחומים נוספים. מטרת הארגון היא לתת לנשים הללו ביטחון על ידי הגבלת [[הפער הדיגיטלי]], כמו גם לעזור להן לצאת ממצבי עוני<!-- <ref>{{lien web|langue=en|website=techmums.co|titre=About|url=http://techmums.co/about/|consulté le=21 mai 2016 !-->. הארגון מגדיר את עצמו "תוכנית מוכרת של סדנאות מעשיות וקצרות להקניית כישורים דיגיטליים" ויש לו קהילה וירטואלית תומכת.<ref>{{cite web|website=techmums.co|title=About|url=http://techmums.co/about/|accessdate=21 May 2016}}</ref>
+
+בלאק הופיעה בשידורי הטלוויזיה, ברדיו ובכתבות של ה־BBC.<ref name="bbc" /><ref>{{cite web | url=http://www.sueblack.co.uk/press.html | title=Dr Sue Black: Press | url-status=dead | archive-url=https://web.archive.org/web/20090411121257/http://www.sueblack.co.uk/press.html | archive-date=11 April 2009}}</ref><ref>{{cite news| last=Smyth | first=Chris | url=http://www.timesonline.co.uk/tol/news/politics/article4387286.ece | title=Scientists send clear message: save Bletchley Park | newspaper=[[The Times]] | date=24 July 2008 }}</ref><ref>{{cite news| last=Arthur | first=Charles | url=https://www.theguardian.com/technology/2009/sep/29/bletchley-park-lottery-grant | title=Bletchley Park's codebreakers get glimpse of lottery funding | newspaper=[[The Guardian]] | date=29 September 2009 }}</ref>
+
+=== פוליטיקה ===
+במרץ 2019 מפלגת השוויון לנשים הודיעה כי בלאק היא המועמדת שלה בבחירות 2021 לראשות עיריית לונדון.<ref>{{Cite web|url=https://www.womensequality.org.uk/new_interim_leader_mayoral_candidate|title=Women's Equality Party announces Interim Leader and London Mayoral Candidate|website=Women's Equality Party|language=en-GB|access-date=2019-10-04}}</ref> בפברואר 2020 יצאה הודעה כי בלאק פרשה ממועמדותה משיקולי בריאות, והוחלפה ב[[מאנדו רייד]]<ref>{{cite news|url=https://www.theguardian.com/politics/2020/feb/16/womens-equality-party-candidate-pulls-out-of-london-mayoral-race|title=Women's Equality party candidate pulls out of London mayoral race|first=Kate|last=Proctor|work=The Guardian|date=16 February 2020|accessdate=16 February 2020}}</ref>
+
+=== פרסים והצטינויות ===
+ב-2009 הייתה בלאק הזוכה הראשונה בפרס ג'ון איבינסון<ref>{{cite web|url=http://www.bcs.org/content/conWebDoc/32424|title=First BCS John Ivinson Award Goes to Dr Sue Black|publisher=[[British Computer Society]]|accessdate=16 July 2014}}</ref> של אגודת המחשבים הבריטית ב[[חברה המלכותית]] בלונדון. ב־2011 היא זכתה בפרס ההשראה הנשית של [[פפסיקו]].<ref>{{Cite web |url=http://pepsicowin.com/2011/08/23/if-i-can-do-it-so-can-you…/ |title=PepsiCo Women's Inspiration Award Winner – If I can do it, so can you… |last=Black |first=Sue |date=23 August 2011 |publisher=PepsiCo WIN |archive-url=https://web.archive.org/web/20120605031541/http://pepsicowin.com/2011/08/23/if-i-can-do-it-so-can-you…/ |archive-date=5 June 2012 |access-date=7 January 2016}}</ref>
+
+בלאק גם הייתה אחת מ־30 נשים שהופיעו בקמפיין "נשים ב־IT" של אגודת המחשבים הבריטית ב־2014, ושסיפורן הופיע בספר האלקטרוני "נשים ב־IT: השראה לדור הבא" שהוציאה האגודה.<ref>{{cite book|title=Women in IT: Inspiring the next generation|date=1 October 2014|publisher=British Computer Society|isbn=978-1-78017-287-3|page=57|url=http://www.bcs.org/upload/pdf/women-it.pdf|accessdate=14 October 2014}}</ref>
+
+ב-2015 הופיעה במקום השביעי ברשימת הנשים המשפיעות ביותר בתחום ה־IT בבריטניה של המגזין Computer Weekly.<ref>{{cite web|url = http://www.computerweekly.com/photostory/4500249403/Top-50-Most-Influential-Women-in-UK-IT-2015/7/7-Sue-Black-Founder-Techmums-Bletchley-Park-campaigner|website = Computer Weekly|accessdate = 11 July 2015|title = The 50 most influential women in UK IT 2015}}</ref>
+
+ב-2016 הפכה לקצינה ב[[מסדר האימפריה הבריטית]] (OBE) על תרומתה בתחום הטכנולוגי.<!-- <ref>{{London Gazette|issue=61450|supp=y|page=N11|date=30 December 2015}}</ref> !--><ref name="Cellan-Jones">{{cite web|url=https://www.bbc.co.uk/news/technology-35202667|title=OBE for Bletchley campaigner Sue Black|last=Cellan-Jones|first=Rory|date=30 December 2015|publisher=[[BBC]]|accessdate=30 December 2015}}</ref><ref>{{Cite web|title = New Year's Honours 2016: CSV|url = https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/489050/NewYearHonoursList2016.csv/preview|publisher = Government of the United Kingdom|accessdate = 30 December 2015|date = 30 December 2015|series = New Year's Honours 2016}}</ref>
+
+ב-2017 זכתה בפרס על אימפקט חברתי מהמוסד האמריקאי AnitaB.org לקידום נשים בטכנולוגיה.<ref>{{cite web|url=https://anitab.org/profiles/abie-award-winners/social-impact/sue-black/|title=Dr. Sue Black OBE - AnitaB.org|date=1 August 2017|publisher=anitab.org|accessdate=14 November 2017}}</ref><ref>{{cite web|url=https://anitab.org/awards-grants/abie-awards/|title=ABIE Awards - AnitaB.org|publisher=anitab.org|accessdate=14 November 2017}}</ref>
+
+==קישורים חיצוניים==
+* {{אתר רשמי|https://www.sueblack.co.uk/}}
+{{ויקישיתוף בשורה|Category:Sue Black (computer scientist)}}
+{{פרופילי מדענים|פרויקט הגנאלוגיה במתמטיקה=103014|dblp=91/3071|גוגל סקולר=wpkjKkgAAAAJ}}
+
+==הערות שוליים==
+{{הערות שוליים}}
+
+{{בקרת זהויות}}
+{{ערך יתום}}
+{{מיון רגיל:בלק, סו}}
+
+[[קטגוריה:קצינים במסדר האימפריה הבריטית]]
+[[קטגוריה:בוגרות אוניברסיטאות ומכללות בממלכה המאוחדת]]
+[[קטגוריה:בוגרי אוניברסיטאות ומכללות בממלכה המאוחדת]]
+[[קטגוריה:בריטיות שנולדו ב-1962]]
+[[קטגוריה:בריטים שנולדו ב-1962]]
+{{וח}}
+{{מיון ויקיפדיה|דף=סו בלאק (מדענית מחשב)|גרסה=39204017|פריט=Q11470|תאריך=יולי 2025}}
+
+      `;
+      expect(()=>getTemplates(wikitext)).to.not.throw();
+    });
+    it("not throw on single curly braces",()=>{
+      const text = `{{אין לבלבל עם|יעילות קוונטית}}
+
+'''ה[[נצילות]] הקוונטית''' (מסמנים <math>\Phi</math> או <math>QY</math>) של תהליך שנוצר על ידי [[קרינה]] היא מספר הפעמים שמתרחש אירוע ספציפי לכל [[פוטון]] שנספג על ידי המערכת. "האירוע", הוא בדרך כלל סוג של [[תגובה כימית]].
+
+== יישומים ==
+הנצילות הקוונטית של התפרקות [[מולקולה|מולקולת]] [[מגיב]] ב[[תגובה כימית]] מוגדרת באופן הבא:
+<center>
+::<math> \Phi = \frac{\rm \#\ molecules \ decomposed} {\rm \#\ photons \ absorbed} </math>
+</center>
+
+כלומר, היחס בין מספר המולקולות שהתפרקו לבין מספר ה[[פוטונים]] ש[[בליעה (קרינה אלקטרומגנטית)|נבלעו]].
+
+הנצילות הקוונטית באירוע אחר, [[פלואורסצנציה]], מוגדרת באופן הבא:{{הערה|שם=הערה מספר 20180103071249:0| Lakowicz, Joseph R. ''Principles of Fluorescence Spectroscopy'' (Kluwer Academic / Plenum Publishers 1999) p.10. {{ISBN|978-0-387-31278-1}}}}
+
+<center>
+
+::<math> \Phi = \frac {\rm \#\ photons \ emitted} {\rm \#\ photons \ absorbed} </math>
+</center>
+
+כלומר, היחס בין מספר ה[[פוטונים]] ש[[פליטה ספונטנית|נפלטו]] לבין מספר ה[[פוטונים]] ש[[בליעה (קרינה אלקטרומגנטית)|נבלעו]].
+
+==דוגמאות ==
+נצילות קוונטית משמשת במידול [[פוטוסינתזה]]:{{הערה|Skillman JB (2008). "Quantum yield variation across the three pathways of photosynthesis: not yet out of the dark". ''J. Exp. Bot.'' '''59''' (7): 1647–61. doi:[https://doi.org/10.1093%2Fjxb%2Fern029 10.1093/jxb/ern029]. PMID [https://www.ncbi.nlm.nih.gov/pubmed/18359752 18359752].}}
+
+<center>
+
+::<math> \Phi = \frac {\rm \mu mol\ CO_2 \ fixed} {\rm \mu mol\ photons \ absorbed} </math>
+</center>
+
+בתהליך פירוק [[פוטוכימיה|פוטוכימי]], כאשר מולקולה [[דיסוציאציה (כימיה)|מתפרדת]] לאחר [[בליעה (קרינה אלקטרומגנטית)|בליעת אור]], הנצילות הקוונטית היא היחס בין מספר המולקולות המפורקות לבין מספר הפוטונים שנבלעים על ידי המערכת. מאחר שלא כל הפוטונים נספגים באופן פרודוקטיבי, הנצילות הקוונטית האופיינית תהיה קטנה מ -1.
+
+נצילויות קוונטיות גדולות מ-1 אפשריות עבור [[תגובת שרשרת גרעינית|תגובת שרשרת]] מבוססת [[קרינה]] או [[פוטוניקה]], כאשר פוטון בודד מעורר שרשרת של טרנספורמציות. דוגמה אחת היא תגובה של [[מימן]] עם [[כלור]] שבה ניתן לייצר <math>10^6</math> מולקולות של [[מימן כלורי]] פר מנה של אור [[כחול]] שנבלע.{{הערה| Laidler K.J., ''Chemical Kinetics'' (3rd ed., Harper & Row 1987) p.289 {{ISBN|0-06-043862-2}}}}
+
+ב[[ספקטרוסקופיה]] אופטית, נצילות קוונטית היא ההסתברות שמצב קוונטי מסוים ייווצר ממצב קוונטי התחלתי נתון. לדוגמה, במעבר ממצב [[סינגלט]] למצב [[טריפלט]], הנצילות נקבעת על פי מספר המולקלות שעברו על ידי [[עירור|עירור אופטי]] ממצב אחד למשנהו.
+
+באופן אמפירי, ניתן למדוד נצילות קוונטית פלאורסצנטית יחסית (לדוגמה מסוימת) בהשוואה לנצילות קוונטית ידועה (למשטח ייחוס):{{הערה|שם=הערה מספר 20180103071249:0}}
+
+<center>
+
+<math>\Phi = \Phi_\mathrm{R}\times\frac{\mathit{Int}}{\mathit{Int}_\mathrm{R}}\frac{1-10^{-A_\mathrm{R}}}{1-10^{-A}}\frac{{n}^2}{{n_\mathrm{R}}^2}</math>
+
+</center>
+
+כאשר R מציין ערכי ייחוס, ''Int'' הוא [[אינטגרל]] המהווה את השטח תחת "פיק" ה[[פליטה ספונטנית|פליטה]], ''A'' היא ה[[צפיפות אופטית|צפיפות האופטית]] ב[[אורך גל]] ה[[בליעה (קרינה אלקטרומגנטית)|בליעה]] ו-''n'' הוא [[מקדם שבירה|מקדם השבירה]] של ה[[תמיסה]].{{הערה|Albert M. Brouwer, [http://www.iupac.org/publications/pac/83/12/2213/ Standards for photoluminescence quantum yield measurements in solution] (IUPAC Technical Report), Pure Appl. Chem., Vol. 83, No. 12, pp. 2213–2228, 2011. doi:10.1351/PAC-REP-10-09-31.}}
+
+== ראו גם ==
+* [[יעילות קוונטית]]
+
+== הערות שוליים ==
+{{הערות שוליים|יישור=שמאל}}
+
+[[קטגוריה:ערכים שבהם תבנית בריטניקה אינה מתאימה]]
+[[קטגוריה:קרינה]]
+[[קטגוריה:ספקטרוסקופיה]]
+[[קטגוריה:פוטוכימיה]]
+{{וח}}
+{{מיון ויקיפדיה|דף=נצילות קוונטית|גרסה=40610385|פריט=Q2856048|תאריך=יולי 2025}}
+      `;
+      expect(()=>getTemplates(text)).to.not.throw();
+    })
   });
 });

@@ -19,6 +19,7 @@ export class LastUpdate extends Worker {
     try {
       const template = getTemplates(this.wikitext, {
         name: "מיון ויקיפדיה",
+        nested: true,
       })[0];
       if (!template) {
         this.loger.warning(
@@ -26,46 +27,14 @@ export class LastUpdate extends Worker {
         );
         return this.start();
       }
-      if (
-        template.parameters["תאריך"] === this.timestamp ||
-        (template.parameters["תאריך"] &&
-          this.isGreater(template.parameters["תאריך"], this.timestamp))
-      ) {
+      if (template.parameters["תאריך"]) {
         return this.start();
       }
       const oldText = template.fullText;
-      let change = false;
-      let corrected = false;
-      if (template.parameters["תאריך"]) {
-        template.fullText = template.fullText.replace(
-          /\|תאריך=([^\}]+)/,
-          `|תאריך=${this.timestamp}`
-        );
-        change = true;
-      } else {
-        if (template.parameters["גרסה"]?.split(" ").length > 1) {
-          template.fullText = template.fullText.replace(
-            /\|גרסה=([\d]+)[^\|\}]*/,
-            `|גרסה=$1`
-          );
-          corrected = true;
-        }
-        if (template.parameters["פריט"]?.split(" ").length > 1) {
-          template.fullText = template.fullText.replace(
-            /\|פריט=(Q[\d]+)[^\|\}]*/,
-            `|פריט=$1`
-          );
-          corrected = true;
-        }
-        if (template.parameters["דרגה"]?.match(/[\d]+$/)) {
-          template.fullText = template.fullText.replace(/\|דרגה=[^\|\}]+/, ``);
-          corrected = true;
-        }
-        template.fullText = template.fullText.replace(
-          /\}\}$/,
-          `|תאריך=${this.timestamp}}}`
-        );
-      }
+      template.fullText = template.fullText.replace(
+        "}}",
+        `|תאריך=${this.timestamp}}}`
+      );
       if (oldText === template.fullText) {
         this.loger.warning(
           `לא נעשו שינויים בתבנית מיון ויקיפדיה בערך [[${this.title}]]`
@@ -78,11 +47,7 @@ export class LastUpdate extends Worker {
         this.loger.warning(`לא נעשו שינויים בערך [[${this.title}]]`);
         return this.start();
       }
-      const editSummary = corrected
-        ? "תיקון טעות בעריכת תבנית מיון ויקיפדיה"
-        : change
-        ? `תיקון תאריך עדכון בתבנית מיון ויקיפדיה`
-        : `הוספת תאריך עדכון אחרון למיון ויקיפדיה`;
+      const editSummary = `הוספת תאריך עדכון אחרון למיון ויקיפדיה`;
       const editOptions = {
         title: this.title,
         text: this.wikitext,

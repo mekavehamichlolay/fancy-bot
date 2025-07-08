@@ -1,31 +1,33 @@
 import fs from "fs";
-import WikiBot from "./WikiBot.js";
-import { Loger } from "./Loger.js";
 import { LastUpdate } from "./LastUpdate.js";
-import { title } from "process";
-const hamichlol = "https://www.hamichlol.org.il/w/api.php";
+import { PM } from "./PM.js";
 
-const bot = new WikiBot(hamichlol);
-
-process.on("exit", handleExit);
-process.on("SIGINT", handleExit);
-process.on("SIGTERM", handleExit);
-process.on("unhandledRejection", handleExit);
-
-const pageList = [];
-const end = {
-  terminate: false,
-};
-
-try {
-  await bot.login();
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-}
-const pages = JSON.parse(fs.readFileSync("./rev_time.json", "utf8"));
+const pm = new PM(LastUpdate, {}, null, null, 5, [["timestamp"]]);
+await pm.init();
+console.log(typeof pm.generator);
+const data = fs.readFileSync("./rev_time.txt", "utf8");
+const pages = data
+  .split("\n")
+  .map((line) => {
+    const [pageid, pagetitle, timestamp] = line.split("\t");
+    return {
+      pageid: parseInt(pageid, 10),
+      pagetitle: pagetitle?.trim(),
+      timestamp: parseInt(timestamp, 10),
+    };
+  })
+  .filter((page) => {
+    return (
+      page.pageid &&
+      page.pagetitle &&
+      page.timestamp &&
+      !isNaN(page.pageid) &&
+      !isNaN(page.timestamp)
+    );
+  });
+console.log(`Found ${pages.length} pages to process`);
 if (!pages || !Array.isArray(pages)) {
-  console.error("Invalid pages data in rev_time.json");
+  console.error("Invalid pages data in rev_time.txt");
   process.exit(1);
 }
 /**
@@ -63,18 +65,38 @@ function parser(pages) {
   };
 }
 async function recurser() {
-  if (pages.length > 0 && !end.terminate) {
-    const last50 = {};
-    pages.splice(pages.length - 50, 50).forEach((page) => {
-      last50[page.pagetitle] = converTimeStampToDate(page.timestamp);
-    });
-    const last50Params = paramCreator(last50);
-    const list = await bot.generator(last50Params, parser(last50));
-    pageList.push(...list);
-    if (pages.length > 0) {
+  if (pm.end.terminate) {
+    console.log("Termination requested, exiting...");
+    return Promise.resolve();
+  }
+  if (pages.length === 0) {
+    console.log("No more pages to process");
+    return Promise.resolve();
+  }
+  const last50 = {};
+  pages.splice(pages.length - 25, 25).forEach((page) => {
+    last50[page.pagetitle] = converTimeStampToDate(page.timestamp);
+  });
+  const last50Params = paramCreator(last50);
+  try {
+    const list = await pm.generator(last50Params, parser(last50));
+    if (!list || !Array.isArray(list)) {
+      console.error("Invalid response from generator, expected an array");
+      console.log(list);
       return recurser();
     }
-    console.log("finished proccesing all pages");
+    pm.setPageList(list);
+    pm.maintainWorkersAmount();
+    return recurser();
+  } catch (e) {
+    console.error("Error in recurser:", e);
+    if (e.message.includes("API error")) {
+      console.error("API error occurred, retrying...");
+      return recurser();
+    } else {
+      console.error("Unexpected error:", e);
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(recurser);
+    }
   }
 }
 /**
@@ -102,37 +124,16 @@ function converTimeStampToDate(timestamp) {
   ];
   return `${monthNames[month]} ${year}`;
 }
-const loger = new Loger(bot);
 const last50 = {};
-pages.splice(pages.length - 5, 5).forEach((page) => {
+pages.splice(pages.length - 25, 25).forEach((page) => {
   last50[page.pagetitle] = converTimeStampToDate(page.timestamp);
 });
-// console.log(paramCreator(last50));
-const list = await bot.generator(paramCreator(last50), parser(last50));
+const list = await pm.generator(paramCreator(last50), parser(last50));
 console.log(`found ${list.length} pages to process`);
-pageList.push(...list);
-const workers = [];
-const nomberOfWorkers = 5;
-for (let i = 0; i < nomberOfWorkers; i++) {
-  const worker = new LastUpdate(i + 1, loger, pageList, end, bot, [
-    "timestamp",
-  ]);
-  workers.push(worker.start());
-}
+pm.setPageList(list);
+const workers = pm.run();
 // await recurser(list.continue);
-// recurser();
-await Promise.all(workers).finally(async () => {
-  console.log(pageList.length);
-  await loger.log();
+await recurser();
+await pm.waitWorkers().finally(() => {
+  console.log("the work was done");
 });
-await bot.logout();
-
-function handleExit() {
-  end.terminate = true;
-  console.log("waiting for workers to finish");
-  Promise.all(workers).finally(() => {
-    loger.log().then(() => {
-      bot.logout().then(() => process.exit(0));
-    });
-  });
-}

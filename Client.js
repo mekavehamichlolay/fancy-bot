@@ -26,6 +26,12 @@ class Client {
       throw new Error("you didn't pass the url of your wiki");
     }
     this.wikiUrl = wikiUrl;
+    if (!this.userName || !this.#password) {
+      console.log(
+        "you didn't pass your user name or password, you can set them in .env file"
+      );
+      process.exit(1);
+    }
   }
   async #postWiki(body) {
     return fetch(this.wikiUrl, {
@@ -45,7 +51,7 @@ class Client {
       await this.login();
     }
     return fetch(`${this.wikiUrl}?${queryString}`, {
-      headers: { cookie: this.#cookie },
+      headers: { cookie: this.#cookie, "Bot-Auth": this.botAuth || "" },
     });
   }
   /**
@@ -72,8 +78,9 @@ class Client {
       lgtoken,
     };
     const res = await this.#postWiki(loginParams);
-    const { login } = await res.json();
-    if (!login.result || login.result !== "Success") {
+    const resp = await res.json();
+    const login = resp?.login;
+    if (!login?.result || login.result !== "Success") {
       console.log(login);
       this.isLogedIn = false;
       return false;
@@ -139,6 +146,7 @@ class Client {
     nocreate = 1,
     section,
     sectiontitle,
+    appendtext,
   }) {
     if (!title && !pageid) {
       throw new Error(
@@ -155,6 +163,7 @@ class Client {
     const editParams = {
       action: "edit",
       text,
+      appendtext,
       undo,
       summary: summary || "",
       minor: 1,
@@ -176,6 +185,11 @@ class Client {
     }
     if (!nocreate) {
       delete editParams.nocreate;
+    }
+    if (!appendtext) {
+      delete editParams.appendtext;
+    } else {
+      delete editParams.text;
     }
     if (title) {
       editParams.title = title;

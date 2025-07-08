@@ -111,6 +111,9 @@ class WikiBot extends Client {
       const res = await this.getWikiWithCookie(
         new URLSearchParams(generatorParams)
       );
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
       const result = await res.json();
       return callBack(result);
     } catch (err) {

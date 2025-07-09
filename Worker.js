@@ -75,13 +75,17 @@ export class Worker {
       for (const param of this.extraParams) {
         this[param] = page[param];
         if (!this[param]) {
-          this.loger.error(`missing extra parameter ${param} in page ${this.title}`);
+          this.loger.error(
+            `missing extra parameter ${param} in page ${this.title}`
+          );
           return this.start();
         }
       }
     }
     if (!this.title || !this.baseRevId || !this.wikitext) {
-      this.loger.error(`missing required properties in page ${JSON.stringify(page)}`);
+      this.loger.error(
+        `missing required properties in page ${JSON.stringify(page)}`
+      );
       return this.start();
     }
     return this.worker();
@@ -104,6 +108,8 @@ export class Worker {
     }
     if (result === "Success") {
       this.loger.success(`[[${this.title}]] נערך בהצלחה`);
+    } else if (result === "editconflict") {
+      this.loger.warning(`עריכת [[${this.title}]] נכשלה: התנגשות עריכה`);
     } else {
       this.loger.error(`עריכת [[${this.title}]] נכשלה: ${result}`);
     }

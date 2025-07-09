@@ -3,6 +3,22 @@ import dotenv from "dotenv";
 dotenv.config();
 import { extractCookie } from "./utils/cookie.mjs";
 /**
+ * @typedef {Object} WikitextObject
+ * @property {String} "*"
+ */
+/**
+ * @typedef {Object} ArticleParse
+ * @property {Number} pageid
+ * @property {Number} revid
+ * @property {WikitextObject} wikitext
+ *
+ */
+/**
+ * @typedef {Object} ArticleError
+ * @property {String} code
+ *
+ */
+/**
  * client for mmediawiki wiki api,
  * use only with A user with bot rights,
  * create A sub user with [[Special:BotPasswords]],
@@ -131,6 +147,7 @@ class Client {
    * @param {number} param.undo
    * @param {Number} [param.baseRevId]
    * @param {String} [param.summary]
+   * @param {String} [param.appendtext]
    * @param {Number} param.nocreate
    * @param {Number|String} [param.section]
    * @param {String} [param.sectiontitle]

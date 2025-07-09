@@ -125,7 +125,7 @@ class WikiBot extends Client {
    *
    * @param {String} article
    * @param {"page"|"pageid"} type
-   * @returns {Promise<import("./mwApi.mjs").ArticleParse|import("./mwApi.mjs").ArticleError>}
+   * @returns {Promise<import("./Client.js").ArticleParse|import("./Client.js").ArticleError>}
    */
   async getArticleText(article, type) {
     const parseParams = new URLSearchParams({
@@ -140,12 +140,9 @@ class WikiBot extends Client {
     try {
       const res = await this.getWikiWithCookie(parseParams);
       const article = await res.json();
-      if (article.error) {
-        return article.error.code;
-      }
       return article;
     } catch (error) {
-      return error;
+      return { error };
     }
   }
 }

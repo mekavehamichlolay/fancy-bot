@@ -81,7 +81,7 @@ class NotInCat extends Worker {
         throw new Error(`HTTP error when calling wikipedia for ${title || this.title}! status: ${response.status}`);
       }
       const data = await response.json();
-      if (!data?.query?.pages?.[0] || data.query.pageids[0] === -1) {
+      if (!data?.query?.pages?.[0] || data.query.pageids[0] === "-1") {
         if (title) {
           return null;
         }
@@ -96,7 +96,7 @@ class NotInCat extends Worker {
         this.title = title;
       }
       return {
-        revid: data.query.pages[0].revisions[0].revid,
+        revid: data.query.pages[0].revisions[0]?.revid,
         prop: data.query.pages[0].pageprops?.wikibase_item,
       };
     } catch (error) {

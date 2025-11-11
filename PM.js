@@ -49,7 +49,7 @@ export class PM {
    * @param {Worker} workerClass
    * @param {Object<string,string|number} params
    * @param {(any)=>Array<{title:String;revid:Number;wikitext:String}>} callback
-   * @param {()=>void} generationHandler
+   * @param {()=>void} [generationHandler]
    * @param {number} [numberOfWorkers]
    * @param {Array<any>} [extraProertiesForWorkers]
    */
